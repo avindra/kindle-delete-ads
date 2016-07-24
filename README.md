@@ -1,9 +1,23 @@
 # kindle-delete-ads
 
-Usage
+## Example
 
 ```bash
-sudo ./kindle-delete-ads.sh
+$ sudo ./kindle-delete-ads.sh
+ Kindle device file is /dev/sde1
+ Mounting Kindle to temporary location: /tmp/tmp.jIUXPogGgC
+ Ads detected. Cleaning time.
+ Deleting all ads... done
+ Installing temp ad blocker... done
+ Unmounting kindle... done
+
+# Will do nothing if ad blocker is in place
+
+$ sudo ./kindle-delete-ads.sh
+ Kindle device file is /dev/sde1
+ Mounting Kindle to temporary location: /tmp/tmp.q1jNYEkwex
+ Temp ad blocker is still intact! Nothing to do.
+ Unmounting kindle... done
 ```
 
 ## How
