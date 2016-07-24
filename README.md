@@ -1,9 +1,19 @@
 # kindle-delete-ads
 
-## Example
+## Installation
+
+The recommended installation is to the `bin` folder of your regular user's home folder, as this should be in your `$PATH` by default.
 
 ```bash
-$ sudo ./kindle-delete-ads.sh
+wget -P ~/bin https://raw.githubusercontent.com/avindra/kindle-delete-ads/master/kindle-delete-ads.sh
+chmod +x ~/bin/kindle-delete-ads.sh
+```
+
+
+## Usage
+
+```bash
+$ sudo kindle-delete-ads.sh
  Kindle device file is /dev/sde1
  Mounting Kindle to temporary location: /tmp/tmp.jIUXPogGgC
  Ads detected. Cleaning time.
@@ -13,7 +23,7 @@ $ sudo ./kindle-delete-ads.sh
 
 # Will do nothing if ad blocker is in place
 
-$ sudo ./kindle-delete-ads.sh
+$ sudo kindle-delete-ads.sh
  Kindle device file is /dev/sde1
  Mounting Kindle to temporary location: /tmp/tmp.q1jNYEkwex
  Temp ad blocker is still intact! Nothing to do.
