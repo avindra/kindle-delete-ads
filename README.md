@@ -49,21 +49,7 @@ Deleting the `.assets` folder will work, but is only a temporary fix. I would re
 You can really make life as easy as possible by having your computer wipe the Kindles ads every time you plug it in. Add a file to `/etc/udev/rules.d` called `kindle.rules`:
 
 ```
-ATTRS{idVendor}=="1949", ATTRS{idProduct}=="0004", RUN+="/usr/local/share/kindle-wrapper.sh"
+ACTION=="add", ENV{DEVTYPE}=="partition", ATTRS{idVendor}=="1949", ATTRS{idProduct}=="0004", RUN+="/home/avindra/bin/kindle-delete-ads.sh '%E{DEVNAME}'"
 ```
 
-*NOTE*: Your `idProduct` will probably differ, depending on the Kindle model you have.
-
-Make a script called `/usr/local/share/kindle-wrapper.sh`:
-
-```bash
-#!/bin/bash
-if [[ "${ACTION}" == "add" ]]; then
-    if [[ "${ID_FS_VERSION}" == "FAT32" && "${DEVTYPE}" == "partition" ]]; then
-        export PATH=$PATH:/sbin # sbin is needed for blkid
-        /home/avindra/bin/kindle-delete-ads.sh >> /tmp/kindlog.txt
-    fi
-fi
-```
-
-*NOTE*: Be sure to set the correct location to the script in your wrapper.
+*NOTE*: Your `idProduct` will probably differ, depending on the Kindle model you have. Additionally, be sure to set the script path in `RUN` to the location where you have installed this script.

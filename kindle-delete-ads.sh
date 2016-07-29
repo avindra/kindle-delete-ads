@@ -5,7 +5,13 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
-kindleDevice=`blkid | grep Kindle | cut -f 1 -d ':'`
+if [[ -n "$1" ]]; then
+	kindleDevice="$1"
+else
+	echo -n "Autodetecting Kindle device... "
+	kindleDevice=`blkid | grep Kindle | cut -f 1 -d ':'`
+	echo "done"
+fi
 
 echo "Kindle device file is $kindleDevice"
 
