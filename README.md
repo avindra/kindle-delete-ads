@@ -5,7 +5,7 @@
 The recommended installation is to your local `bin` folder (it should be in your `$PATH` by default).
 
 ```bash
-wget -P ~/bin https://raw.githubusercontent.com/avindra/kindle-delete-ads/master/kindle-delete-ads.sh
+wget -P ~/bin https://raw.githubusercontent.com/avindra/kindle-delete-ads/main/kindle-delete-ads.sh
 chmod +x ~/bin/kindle-delete-ads.sh
 ```
 

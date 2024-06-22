@@ -7,12 +7,12 @@
 #
 # changelog
 #
-#  2024-06-20: drop bashims, use standard shell
+#  2024-06-20: drop bashisms
 #  2016-07-24: initial release
 
 
 if [ $EUID -ne 0 ]; then
-	echo "Run this script with Root priveleges."
+	echo "Run this script with Root privileges."
 	exit 1
 fi
 
@@ -69,7 +69,7 @@ elif [ -d $adverts ]; then
 	echo "done"
 fi
 
-# Post-cleanup for this utility
+# Post-cleanup
 
 echo -n "Unmounting kindle... "
 
