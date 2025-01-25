@@ -35,8 +35,6 @@ Kindle stores the cover ads on the lock screen in a system folder called `.asset
 
 It works on Linux, macOS and should work on other \*nix systems.
 
-Use [`kindle-delete-ads-mac.sh`](./kindle-delete-ads-mac.sh) on macOS
-
 ## Why
 
 Deleting the `.assets` folder will work, but is only a temporary fix. I would recommend using this script to purge your Kindle when necessary, and keeping your Kindle in airplane mode so that it doesn't try to fetch more ads. Usage of airplane mode should also extend your battery life.
