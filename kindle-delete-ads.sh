@@ -7,6 +7,7 @@
 #
 # changelog
 #
+#  2025-01-18: macOS compatibility
 #  2024-06-20: drop bashisms
 #  2016-07-24: initial release
 
@@ -19,9 +20,19 @@ fi
 if [ -n "$1" ]; then
 	kindleDevice="$1"
 else
-	echo -n "Autodetecting Kindle device... "
-	kindleDevice=`blkid | grep Kindle | cut -f 1 -d ':'`
-	echo "done"
+	# expected mount point on mac - mounts automatically
+	kindleMount="/Volumes/Kindle"
+	if [ -d $kindleMount ]; then
+		echo "Autodetecting Kindle device... "
+		kindleDisk=`diskutil list | grep Kindle | awk '{print $5}'`
+		kindleDevice="/dev/$kindleDisk"
+		echo "Kindle device file is $kindleDevice"
+	else 
+		echo -n "Autodetecting Kindle device... "
+		kindleDevice=`blkid | grep Kindle | cut -f 1 -d ':'`
+		echo "done"
+	fi
+
 fi
 
 echo "Kindle device file is $kindleDevice"
