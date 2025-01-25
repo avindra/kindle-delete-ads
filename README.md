@@ -33,10 +33,9 @@ $ sudo kindle-delete-ads.sh
 
 Kindle stores the cover ads on the lock screen in a system folder called `.assets`. This is a script which automates the well known hack.
 
-It works on Linux, and should work on other \*nix systems.
+It works on Linux, macOS and should work on other \*nix systems.
 
-It will not work on macOS, because it uses `blkid`. If you want to create a PR for macOS support, feel free.
-
+Use [`kindle-delete-ads-mac.sh`](./kindle-delete-ads-mac.sh) on macOS
 
 ## Why
 
