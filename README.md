@@ -48,6 +48,16 @@ To make life as easy as possible, have your computer wipe the Kindles ads every 
 
 Unfortunately [since June 2018, udevd service has been restricted to a limited set of syscalls](https://github.com/systemd/systemd/commit/ee8f26180d01e3ddd4e5f20b03b81e5e737657ae#r143372255), notably missing `@mount`. To work around this, add `@mount` to `SystemCallFilter` in `/usr/lib/systemd/system/systemd-udevd.service`, or simply comment out the entire `SystemCallFilter` line.
 
+To continue without restarting your system, run:
+
+```sh
+sudo systemctl restart systemd-udevd
+sudo systemctl daemon-reload
+
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
 Afterwards, add a file to `/etc/udev/rules.d` called `99-kindle.rules`.
 
 ```sh
