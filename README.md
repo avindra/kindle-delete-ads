@@ -35,7 +35,7 @@ Kindle stores the cover ads on the lock screen in a system folder called `.asset
 
 It works on Linux, macOS and should work on other \*nix systems.
 
-Use [`kindle-delete-ads-mac.sh`](./kindle-delete-ads-mac.sh) on macOS
+On macOS, the script uses the standard `/Volumes/Kindle` mount point. You can also pass a custom Kindle mount path as the first argument.
 
 ## Why
 
