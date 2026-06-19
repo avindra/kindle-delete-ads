@@ -1,80 +1,107 @@
 #!/usr/bin/env sh
 
 # to debug, uncomment the following 2 lines
-# exec 1> /tmp/kindle-ads 2>&1
-# set -x
+#exec 1> /tmp/kindle-ads 2>&1
+#set -x
 
 #
 # changelog
 #
+#  2026-06-19: merge macOS script into main script
 #  2024-06-20: drop bashisms
 #  2016-07-24: initial release
 
 
-if [ $EUID -ne 0 ]; then
-	echo "Run this script with Root privileges."
-	exit 1
-fi
+delete_ads() {
+	kindleMount="$1"
+	adverts="system/.assets"
 
-if [ -n "$1" ]; then
-	kindleDevice="$1"
-else
-	echo -n "Autodetecting Kindle device... "
-	kindleDevice=`blkid | grep Kindle | cut -f 1 -d ':'`
-	echo "done"
-fi
+	# We are in Kindle filesystem after this point...
+	cd "$kindleMount" || exit 1
 
-echo "Kindle device file is $kindleDevice"
+	if [ -f "$adverts" ]; then
+		echo "Temp ad blocker is still intact! Nothing to do."
+	elif [ -d "$adverts" ]; then
+		echo "Ads detected. Cleaning time."
 
-mountInfo=`df | grep $kindleDevice`
-if [ $? -eq 0 ]; then
-	echo "Kindle is already mounted! unmounting...."
-	umount $kindleDevice
-fi
+		printf "%s" "Deleting all ads... "
+		rm -rf "$adverts"
+		echo "done"
 
-tmpMount=`mktemp -d`
+		printf "%s" "Installing temp ad blocker... "
+		touch "$adverts"
+		echo "done"
+	fi
+}
 
-# note: usage of "mount" here requires explicit permission grant
-# in the udevd service file.
-mount $kindleDevice $tmpMount
+case "$(uname -s)" in
+	Darwin)
+		if [ -n "$1" ]; then
+			kindleMount="$1"
+		else
+			kindleMount="/Volumes/Kindle"
+		fi
 
-# the suggested mount method doesn't work (hangs up)
-# systemd-mount --no-ask-password --no-pager --fsck=false --automount=false $kindleDevice $tmpMount
+		if [ -d "$kindleMount" ]; then
+			echo "Kindle mounted at $kindleMount"
+		else
+			echo "Kindle not found. Exiting..."
+			exit 1
+		fi
 
-if [ $? -ne 0 ] ; then
-	echo "Failed to mount fs"
-	exit 1
-fi
+		delete_ads "$kindleMount"
+		;;
+	*)
+		if [ "$(id -u)" -ne 0 ]; then
+			echo "Run this script with Root privileges."
+			exit 1
+		fi
 
-# We are in Kindle filesystem after this point...
+		if [ -n "$1" ]; then
+			kindleDevice="$1"
+		else
+			printf "%s" "Autodetecting Kindle device... "
+			kindleDevice=$(blkid | grep Kindle | cut -f 1 -d ':')
+			echo "done"
+		fi
 
-cd $tmpMount
+		if [ -z "$kindleDevice" ]; then
+			echo "Kindle not found. Exiting..."
+			exit 1
+		fi
 
-adverts="system/.assets"
+		echo "Kindle device file is $kindleDevice"
 
-echo "Mounting Kindle to temporary location: $tmpMount"
+		if df | grep "$kindleDevice" > /dev/null; then
+			echo "Kindle is already mounted! unmounting...."
+			umount "$kindleDevice"
+		fi
 
+		tmpMount=$(mktemp -d)
 
-if [ -f $adverts ]; then
-	echo "Temp ad blocker is still intact! Nothing to do."
-elif [ -d $adverts ]; then
-	echo "Ads detected. Cleaning time."
+		# note: usage of "mount" here requires explicit permission grant
+		# in the udevd service file.
 
-	echo -n "Deleting all ads... "
-	rm -rf $adverts
-	echo "done"
+		# the suggested mount method doesn't work (hangs up)
+		# systemd-mount --no-ask-password --no-pager --fsck=false --automount=false $kindleDevice $tmpMount
 
-	echo -n "Installing temp ad blocker... "
-	touch $adverts
-	echo "done"
-fi
+		if ! mount "$kindleDevice" "$tmpMount"; then
+			echo "Failed to mount fs"
+			rmdir "$tmpMount"
+			exit 1
+		fi
 
-# Post-cleanup
+		echo "Mounting Kindle to temporary location: $tmpMount"
+		delete_ads "$tmpMount"
 
-echo -n "Unmounting kindle... "
+		# Post-cleanup
 
-cd - > /dev/null
-umount $kindleDevice
-rmdir $tmpMount
+		printf "%s" "Unmounting kindle... "
 
-echo "done"
+		cd - > /dev/null || exit 1
+		umount "$kindleDevice"
+		rmdir "$tmpMount"
+
+		echo "done"
+		;;
+esac
